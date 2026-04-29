@@ -1,0 +1,219 @@
+html<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapping Studio - La Radio de los Nuevos Lanzamientos</title>
+    <style>
+        :root {
+            --dorado: #ffcc00;
+            --oscuro-transparente: rgba(0, 0, 0, 0.85);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: white;
+            background: url(https://postimg.cc) no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .capa-oscura {
+            background: rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .titulo-principal {
+            text-align: center;
+            font-size: clamp(1.1rem, 3vw, 2.2rem);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px #000;
+        }
+
+        .contenedor-central {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            flex-grow: 1;
+            padding-bottom: 80px;
+        }
+
+        .seccion-radio {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--oscuro-transparente);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--dorado);
+        }
+
+        .logo-zapping {
+            width: 180px;
+            margin-bottom: 20px;
+        }
+
+        .info-cancion {
+            font-size: 1.1rem;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Botón Play Estilo Zapping */
+        .btn-play {
+            background: var(--dorado);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            color: black;
+        }
+
+        .btn-play:hover { transform: scale(1.05); background: #fff; }
+
+        .ritmo {
+            display: flex;
+            align-items: flex-end;
+            height: 35px;
+            gap: 4px;
+            margin-top: 15px;
+        }
+        .barra {
+            width: 6px;
+            background: #00ff00;
+            animation: saltar 0.5s infinite alternate;
+            animation-play-state: paused;
+        }
+        @keyframes saltar { from { height: 5px; } to { height: 35px; } }
+
+        .slider-derecha {
+            width: 7cm; 
+            height: 10cm;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .slider-derecha img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .slider-derecha img.active { opacity: 1; }
+
+        .footer-redes {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px;
+            border-radius: 30px;
+            z-index: 100;
+        }
+        .icon-red {
+            width: 35px;
+            height: 35px;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 600px) {
+            .slider-derecha { width: 6cm; height: 8.5cm; }
+            .footer-redes { bottom: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="capa-oscura">
+    <h1 class="titulo-principal">Radio El Nacional<br>98.9 Pehuajo</h1>
+
+    <div class="contenedor-central">
+        <div class="seccion-radio">
+            <img src="https://postimg.cc" class="logo-zapping">
+            
+            <div id="status" class="info-cancion">En Vivo</div>
+
+            <!-- REPRODUCTOR CORREGIDO -->
+            <button id="playBtn" class="btn-play">REPRODUCIR</button>
+
+            <div class="ritmo">
+                <div class="barra" style="animation-delay: 0.1s"></div>
+                <div class="barra" style="animation-delay: 0.2s"></div>
+                <div class="barra" style="animation-delay: 0.3s"></div>
+                <div class="barra" style="animation-delay: 0.4s"></div>
+            </div>
+        </div>
+
+        <div class="slider-derecha" id="galeria">
+            <img src="https://fbcdn.net" class="active">
+            <img src="https://fbcdn.net">
+            <img src="https://fbcdn.net">
+        </div>
+    </div>
+
+    <footer class="footer-redes">
+        <a href="https://wa.me"><img src="https://flaticon.com" class="icon-red"></a>
+        <a href="https://facebook.com"><img src="https://flaticon.com" class="icon-red"></a>
+        <a href="https://instagram.com"><img src="https://flaticon.com" class="icon-red"></a>
+        <a href="https://appcreator24.com"><img src="https://flaticon.com" class="icon-red"></a>
+    </footer>
+</div>
+
+<script>
+    // Slider de imágenes
+    const fotos = document.querySelectorAll('#galeria img');
+    let index = 0;
+    setInterval(() => {
+        fotos[index].classList.remove('active');
+        index = (index + 1) % fotos.length;
+        fotos[index].classList.add('active');
+    }, 10000);
+
+    // Lógica del audio corregida para GitHub
+    const audio = new Audio("http://giss.tv");
+    const playBtn = document.getElementById('playBtn');
+    const status = document.getElementById('status');
+    const barras = document.querySelectorAll('.barra');
+
+    playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            status.innerText = "Conectando...";
+            audio.play().then(() => {
+                status.innerText = "EN VIVO";
+                playBtn.innerText = "PAUSAR";
+                barras.forEach(b => b.style.animationPlayState = 'running');
+            }).catch(e => {
+                status.innerText = "Error (usar link HTTP)";
+                console.log(e);
+            });
+        } else {
+            audio.pause();
+            status.innerText = "Pausa";
+            playBtn.innerText = "REPRODUCIR";
+            barras.forEach(b => b.style.animationPlayState = 'paused');
+        }
+    });
+</script>
+
+</body>
+</html>
